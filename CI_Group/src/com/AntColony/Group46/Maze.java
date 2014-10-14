@@ -60,13 +60,18 @@ public class Maze {
 		}
 	}
 
-	public boolean isWalkable(int x, int y) {
+	public Tile getTile(int x, int y) {
 		for(Tile t: tiles) {
 			if(t.getX() == x && t.getY() == y) {
-				return t.getWalkable();
+				return t;
 			}
 		}
-		return false;
+		return null;
+	}
+	
+	public boolean isWalkable(int x, int y) {
+		if(x < 0 || y < 0 || y > height || x > width) { return false; }
+		return getTile(x, y).getWalkable();
 	}
 	
 	public int getStartX() {

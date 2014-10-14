@@ -17,7 +17,7 @@ public class AntColony {
 			ants = new ArrayList<Ant>();
 			
 			for(int a = 0; a < maxants; a++) {
-				Ant ant = new Ant(maze.getStartX(), maze.getStartY());
+				Ant ant = new Ant(maze.getStartX(), maze.getStartY(), maze);
 				ant.start();
 				ants.add(ant);
 			}
