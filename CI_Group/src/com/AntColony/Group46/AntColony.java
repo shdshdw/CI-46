@@ -13,14 +13,24 @@ public class AntColony {
 	public AntColony() {
 		maze = new Maze("easy coordinates.txt", "easy maze.txt");
 		
-		ants = new ArrayList<Ant>();
-		
-		for(int x = 0; x < maxants; x++) {
-			ants.add(new Ant(maze.getStartX(), maze.getStartY()));
-		}
-		
 		for(int x = 0; x < maxiterations; x++) {
+			ants = new ArrayList<Ant>();
 			
+			for(int a = 0; a < maxants; a++) {
+				Ant ant = new Ant(maze.getStartX(), maze.getStartY());
+				ant.start();
+				ants.add(ant);
+			}
+			
+			for(Ant a: ants) {
+				try {
+					a.getThread().join();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			System.out.println("Finished!");
 		}
 	}
 	
