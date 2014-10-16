@@ -10,15 +10,17 @@ public class Ant implements Runnable{
 	private int y;
 	
 	private Maze maze;
-	private ArrayList<Tile> walkedWay;
+	private ArrayList<Tile> walkedPath;
 	private Random rand;
+	
+	private int previousMove = -1;
 	
 	public Ant(int x, int y, Maze maze) {
 		this.setX(x);
 		this.setY(y);
 		this.setMaze(maze);
 		
-		walkedWay = new ArrayList<Tile>();
+		walkedPath = new ArrayList<Tile>();
 		rand = new Random();
 	}
 
@@ -43,7 +45,7 @@ public class Ant implements Runnable{
 	}
 
 	public synchronized void start() {
-		t = new Thread("Ant");
+		t = new Thread(this, "Ant");
 		t.start();
 	}
 	
@@ -55,18 +57,36 @@ public class Ant implements Runnable{
 	
 	@Override
 	public void run() {
-		walkedWay.add(maze.getTile(x, y));
 		while(x != maze.getEndX() || y != maze.getEndY()) {
+			walkedPath.add(maze.getTile(x, y));
 			boolean[] possible = new boolean[4];
 			for(int x = 0; x < possible.length; x++) { possible[x] = false; }
 			if(maze.isWalkable(x + 1, y)) { possible[0] = true; }
 			if(maze.isWalkable(x, y - 1)) { possible[1] = true; }
 			if(maze.isWalkable(x - 1, y)) { possible[2] = true; }
 			if(maze.isWalkable(x, y + 1)) { possible[3] = true; }
+			int countTrue = 0;
+			for(int x = 0; x < possible.length; x++) { if(possible[x]) { countTrue++; } }
 			int direction = -1;
-			while(direction == -1) {
-				rand.
+			if(countTrue == 1 && previousMove > -1) {
+				maze.getTile(x, y).setWalkable(false);
+				for(int x = 0; x < possible.length; x++) { if(possible[x]) { direction = x; } }
+			} else {
+				while(direction == -1 || direction == (previousMove + 2) % 4) {
+					direction = rand.nextInt(4);
+					if(!possible[direction]) { direction = -1; }
+				}				
 			}
+			if(direction == 0) { setX(getX() + 1); }
+			else if(direction == 1) { setY(getY() - 1); }
+			else if(direction == 2) { setX(getX() - 1); }
+			else if(direction == 3) { setY(getY() + 1); }
+			previousMove = direction;
 		}
+		walkedPath.add(maze.getTile(x, y));
+	}
+
+	public ArrayList<Tile> getWalkedPath() {
+		return walkedPath;
 	}
 }

@@ -4,14 +4,14 @@ import java.util.ArrayList;
 
 
 public class AntColony {
-	private int maxants = 1000;
-	private int maxiterations = 100;
+	private int maxants = 10;
+	private int maxiterations = 1;
 	
 	private ArrayList<Ant> ants;
 	private Maze maze;
 	
 	public AntColony() {
-		maze = new Maze("easy coordinates.txt", "easy maze.txt");
+		maze = new Maze("hard coordinates.txt", "hard maze.txt");
 		
 		for(int x = 0; x < maxiterations; x++) {
 			ants = new ArrayList<Ant>();
@@ -25,6 +25,7 @@ public class AntColony {
 			for(Ant a: ants) {
 				try {
 					a.getThread().join();
+					System.out.println(a.getWalkedPath().size());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

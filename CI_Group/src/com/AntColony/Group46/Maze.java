@@ -70,7 +70,7 @@ public class Maze {
 	}
 	
 	public boolean isWalkable(int x, int y) {
-		if(x < 0 || y < 0 || y > height || x > width) { return false; }
+		if(x < 0 || y < 0 || y > height - 1|| x > width - 1) { return false; }
 		return getTile(x, y).getWalkable();
 	}
 	
