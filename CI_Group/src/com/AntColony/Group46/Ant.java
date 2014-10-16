@@ -119,17 +119,20 @@ public class Ant implements Runnable {
 						}
 					}
 					
-					while(direction == -1) {
+					while(direction == -1 || direction == (previousMove + 2) % 4) {
 						double randum = rand.nextDouble();
-						System.out.println("WHILE");
 						for (int x = 0; x < possible.length; x++) {
-							if (possible[x] != null && possible[x].getChance() < randum) {
+							if(possible[x] != null) {
+								System.out.println(possible[x].getChance());
+							}
+							if (possible[x] != null && possible[x].getChance() > randum) {
+								//System.out.println(x);
 								direction = x;
-								System.out.println(direction);
 								break;
 							}
 						}						
 					}
+					System.out.println(direction);
 					
 					for (int x = 0; x < possible.length; x++) {
 						if(possible[x] != null) {

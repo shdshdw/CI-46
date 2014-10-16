@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 
 public class AntColony {
-	private int maxants = 1;
+	private int maxants = 5;
 	private int maxiterations = 2;
 	
 	private ArrayList<Ant> ants;

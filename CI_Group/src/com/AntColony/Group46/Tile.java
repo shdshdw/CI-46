@@ -10,8 +10,6 @@ public class Tile {
 		this.x = x;
 		this.y = y;
 		this.walkable = walkable;
-		this.pheromones = 0d;
-		this.chance = 0d;
 	}
 	
 	public int getY() {
