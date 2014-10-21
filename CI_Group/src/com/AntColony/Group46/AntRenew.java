@@ -49,7 +49,9 @@ public class AntRenew  implements Runnable {
 							setOfDirections.add(dir);
 						}
 					}
-					direction = setOfDirections.get(rand.nextInt(setOfDirections.size()));
+					while(direction == -1 || direction == (previousMove + 2) % 4) {
+						direction = setOfDirections.get(rand.nextInt(setOfDirections.size()));						
+					}
 				}
 			}
 			

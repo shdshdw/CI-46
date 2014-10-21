@@ -69,6 +69,25 @@ public class Maze {
 		return null;
 	}
 	
+	public Tile bestNeighbor(int x, int y) {
+		ArrayList<Tile> posDir = new ArrayList<Tile>();
+		if(getTile(x + 1, y) != null ) { posDir.add(getTile(x + 1, y)); }
+		if(getTile(x - 1, y) != null) { posDir.add(getTile(x - 1, y)); }
+		if(getTile(x, y + 1) != null) { posDir.add(getTile(x, y + 1)); }
+		if(getTile(x, y - 1) != null ) { posDir.add(getTile(x, y - 1)); } 
+		
+		double highPer = posDir.get(0).getPheromones();
+		Tile bestNeighbor = posDir.get(0);
+		for(Tile t: posDir) {
+			if(t.getPheromones() > highPer) {
+				bestNeighbor = t;
+				highPer = t.getPheromones();
+			}
+		}
+		
+		return bestNeighbor;
+	}
+	
 	public boolean isWalkable(int x, int y) {
 		if(x < 0 || y < 0 || y > height - 1|| x > width - 1) { return false; }
 		return getTile(x, y).getWalkable();

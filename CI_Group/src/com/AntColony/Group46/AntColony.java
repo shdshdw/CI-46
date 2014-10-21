@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 
 public class AntColony {
-	private int maxants = 1;
-	private int maxiterations = 1000;
-	private double p = 0.5;
+	private int maxants = 4;
+	private int maxiterations = 100;
+	private double p = 0.1;
 	
 	private ArrayList<AntRenew> ants;
 	private Maze mainMaze;
@@ -46,7 +46,7 @@ public class AntColony {
 				int pathlength = a.getWalkedPath().size();
 				for(Tile t: a.getWalkedPath()) {
 					if(!done.contains(t)) {
-						mainMaze.getTile(t.getX(), t.getY()).setPheromones(mainMaze.getTile(t.getX(), t.getY()).getPheromones() + (100d / pathlength));
+						mainMaze.getTile(t.getX(), t.getY()).setPheromones(mainMaze.getTile(t.getX(), t.getY()).getPheromones() + (1000d / pathlength));
 						done.add(t);
 					}
 				}
@@ -56,7 +56,6 @@ public class AntColony {
 				t.setPheromones(t.getPheromones() * (1d - p));
 			}
 			
-			System.out.println("Finished!");
 		}
 		
 		for(int y = 0; y < mainMaze.getHeight(); y++) {
@@ -64,6 +63,33 @@ public class AntColony {
 				System.out.print(mainMaze.getTile(x, y).getPheromones() + " ");
 			}
 			System.out.println();
+		}
+		
+		echoDirections();
+		
+		System.out.println("Finished!");
+	}
+	
+	private void echoDirections() {
+		int x = mainMaze.getStartX();
+		int y = mainMaze.getStartY();
+		int previousMove = -1;
+		while(x != mainMaze.getEndX() || y != mainMaze.getEndY()) {
+			int direction = -1;
+			Tile bestNeighbor = mainMaze.bestNeighbor(x, y);
+			if(bestNeighbor.getX() > x) {
+				direction = 0;
+			} else if(bestNeighbor.getX() < x) {
+				direction = 2;
+			} else if(bestNeighbor.getY() > y) {
+				direction = 3;
+			} else {
+				direction = 1;
+			}
+			System.out.print(direction + ", ");
+			
+			x = bestNeighbor.getX();
+			y = bestNeighbor.getY();
 		}
 	}
 	
