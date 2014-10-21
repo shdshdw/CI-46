@@ -23,12 +23,12 @@ public class Maze {
 			String start = coorinput.readLine();
 			startX = Integer.parseInt(start.split("\\W")[0]);
 			startY = Integer.parseInt(start.split("\\W")[2]);
-			System.out.println("StartX: " + startX + ", StartY: " + startY);
+			//System.out.println("StartX: " + startX + ", StartY: " + startY);
 			
 			String end = coorinput.readLine();
 			endX = Integer.parseInt(end.split("\\W")[0]);
 			endY = Integer.parseInt(end.split("\\W")[2]);
-			System.out.println("EndX: " + endX + ", EndY: " + endY);
+			//System.out.println("EndX: " + endX + ", EndY: " + endY);
 			coorinput.close();
 			
 			// Read Width And Height
@@ -37,7 +37,7 @@ public class Maze {
 			String[] size = line.split(" ");
 			width = Integer.parseInt(size[0]);
 			height = Integer.parseInt(size[1]);
-			System.out.println("Maze Width: " + width + ", Maze Height: " + height);
+			//System.out.println("Maze Width: " + width + ", Maze Height: " + height);
 			
 			// Init tiles
 			for(int y = 0; y < height; y++) {
@@ -52,7 +52,7 @@ public class Maze {
 					}
 				}
 			}
-			System.out.println("Tile Size: " + tiles.size());
+			//System.out.println("Tile Size: " + tiles.size());
 			
 			mazeinput.close();
 		} catch(Exception e) {
