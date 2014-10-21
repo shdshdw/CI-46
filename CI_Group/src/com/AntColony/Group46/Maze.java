@@ -69,12 +69,12 @@ public class Maze {
 		return null;
 	}
 	
-	public Tile bestNeighbor(int x, int y) {
+	public Tile bestNeighbor(Tile previous, int x, int y) {
 		ArrayList<Tile> posDir = new ArrayList<Tile>();
-		if(getTile(x + 1, y) != null ) { posDir.add(getTile(x + 1, y)); }
-		if(getTile(x - 1, y) != null) { posDir.add(getTile(x - 1, y)); }
-		if(getTile(x, y + 1) != null) { posDir.add(getTile(x, y + 1)); }
-		if(getTile(x, y - 1) != null ) { posDir.add(getTile(x, y - 1)); } 
+		if(getTile(x + 1, y) != null && !Calculations.tileEquals(previous, getTile(x + 1, y)))  { posDir.add(getTile(x + 1, y)); }
+		if(getTile(x - 1, y) != null && !Calculations.tileEquals(previous, getTile(x - 1, y))) { posDir.add(getTile(x - 1, y)); }
+		if(getTile(x, y + 1) != null && !Calculations.tileEquals(previous, getTile(x, y + 1))) { posDir.add(getTile(x, y + 1)); }
+		if(getTile(x, y - 1) != null && !Calculations.tileEquals(previous, getTile(x, y - 1))) { posDir.add(getTile(x, y - 1)); } 
 		
 		double highPer = posDir.get(0).getPheromones();
 		Tile bestNeighbor = posDir.get(0);
@@ -86,6 +86,26 @@ public class Maze {
 		}
 		
 		return bestNeighbor;
+	}
+	
+	// 0 = EAST, 1 = NORTH, 2 = WEST, 3 = SOUTH
+	public void getBestPath(int x, int y) {
+		int currentX = x;
+		int currentY = y;
+		Tile previousTile = getTile(x, y);
+		int steps = 0;
+		while(currentX != endX || currentY != endY) {
+			//System.out.println(currentX + ", " + currentY);
+			Tile currentTile = getTile(currentX, currentY);
+			Tile next = bestNeighbor(previousTile, currentX, currentY);
+			System.out.print(Calculations.getDirection(currentTile, next) + ";");
+			steps++;
+			currentX = next.getX();
+			currentY = next.getY();
+			previousTile = currentTile;
+		}
+		System.out.print(";");
+		System.out.println(steps);
 	}
 	
 	public boolean isWalkable(int x, int y) {

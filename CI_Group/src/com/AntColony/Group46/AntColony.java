@@ -4,15 +4,15 @@ import java.util.ArrayList;
 
 
 public class AntColony {
-	private int maxants = 4;
-	private int maxiterations = 100;
+	private int maxants = 10;
+	private int maxiterations = 50;
 	private double p = 0.1;
 	
 	private ArrayList<AntRenew> ants;
 	private Maze mainMaze;
 	
-	private String coorfile = "easy coordinates.txt";
-	private String mazefile = "easy maze.txt";
+	private String coorfile = "medium coordinates.txt";
+	private String mazefile = "medium maze.txt";
 	
 	public AntColony() {
 		mainMaze = new Maze(coorfile, mazefile);
@@ -35,7 +35,6 @@ public class AntColony {
 			for(AntRenew a: ants) {
 				try {
 					a.getThread().join();
-					System.out.println(a.getWalkedPath().size());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -56,6 +55,8 @@ public class AntColony {
 				t.setPheromones(t.getPheromones() * (1d - p));
 			}
 			
+			System.out.println("#" + x);
+			
 		}
 		
 		for(int y = 0; y < mainMaze.getHeight(); y++) {
@@ -65,32 +66,9 @@ public class AntColony {
 			System.out.println();
 		}
 		
-		echoDirections();
+		mainMaze.getBestPath(mainMaze.getStartX(), mainMaze.getStartY());
 		
 		System.out.println("Finished!");
-	}
-	
-	private void echoDirections() {
-		int x = mainMaze.getStartX();
-		int y = mainMaze.getStartY();
-		int previousMove = -1;
-		while(x != mainMaze.getEndX() || y != mainMaze.getEndY()) {
-			int direction = -1;
-			Tile bestNeighbor = mainMaze.bestNeighbor(x, y);
-			if(bestNeighbor.getX() > x) {
-				direction = 0;
-			} else if(bestNeighbor.getX() < x) {
-				direction = 2;
-			} else if(bestNeighbor.getY() > y) {
-				direction = 3;
-			} else {
-				direction = 1;
-			}
-			System.out.print(direction + ", ");
-			
-			x = bestNeighbor.getX();
-			y = bestNeighbor.getY();
-		}
 	}
 	
 	public static void main(String[] args) {
