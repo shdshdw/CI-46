@@ -1,11 +1,12 @@
 package com.AntColony.Group46;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 
 public class AntColony {
 	private int maxants = 10;
-	private int maxiterations = 2;
+	private int maxiterations = 20;
 	private double p = 0.6d;
 	private double pheromonespath = 2000d;
 	
@@ -41,7 +42,6 @@ public class AntColony {
 			for(AntRenew a: ants) {
 				try {
 					a.getThread().join();
-					System.out.println("YUP");
 					totalLengthPath += a.getWalkedPath().size();
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -60,13 +60,39 @@ public class AntColony {
 			System.out.println("Gemiddelde lengte van paden: " + totalLengthPath / maxants);
 		}
 		
-		printMaze(mainMaze);
+		//printFirstMaze(new AntRenew(true, mainMaze.getStartX(), mainMaze.getStartY(), mainMaze));
 		
 		mainMaze.getBestPath(mainMaze.getStartX(), mainMaze.getStartY());
 		
 		System.out.println("Finished!");
 	}
 	
+	private void printFirstMaze(AntRenew antRenew) {
+		antRenew.start(); 
+		try {
+			antRenew.getThread().join();
+			System.out.println("SUP");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		ArrayList<Tile> walkedPath = antRenew.getWalkedPath();
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter("hard bestpath.txt", "UTF-8");
+			writer.println(walkedPath.size() - 1 + ";");
+			writer.println(1 + ", " + 1 + ";");
+			Tile previousTile = walkedPath.get(0);
+			walkedPath.remove(0);
+			for(Tile i : walkedPath) {
+				writer.print(Calculations.getDirection(previousTile, i) + ";");
+				previousTile = i;
+			}
+			writer.close();		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void printMaze(Maze maze) {
 		for(int y = 0; y < maze.getHeight(); y++) {
 			for(int x = 0; x < maze.getWidth(); x++) {

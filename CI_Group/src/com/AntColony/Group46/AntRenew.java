@@ -72,14 +72,28 @@ public class AntRenew  implements Runnable {
 					}
 				} else {
 					ArrayList<Integer> setOfDirections = new ArrayList<Integer>();
+					ArrayList<Tile> isInSetOfDirections = new ArrayList<Tile>();
+					
 					for(Tile t: posDir) {
 						int dir = getDirection(t);
-						for(int x = 0; x < t.getPheromones(); x++) {
+						if((int)t.getPheromones() > 0) {
+							isInSetOfDirections.add(t);
+						}
+						for(int x = 0; x < (int)t.getPheromones(); x++) {
 							setOfDirections.add(dir);
 						}
 					}
-					while(direction == -1 || direction == (previousMove + 2) % 4) {
-						direction = setOfDirections.get(rand.nextInt(setOfDirections.size()));						
+					if(isInSetOfDirections.size() == 1 && getDirection(isInSetOfDirections.get(0)) == (previousMove + 2) % 4) {
+						posDir.remove(isInSetOfDirections.get(0));
+						direction = getDirection(posDir.get(rand.nextInt(posDir.size())));
+					} else {
+						while(direction == -1 || direction == (previousMove + 2) % 4) {
+							if(setOfDirections.size() == 0) {
+								direction = getDirection(posDir.get(rand.nextInt(posDir.size())));
+							} else {
+								direction = setOfDirections.get(rand.nextInt(setOfDirections.size()));
+							}						
+						}						
 					}
 				}
 			}
