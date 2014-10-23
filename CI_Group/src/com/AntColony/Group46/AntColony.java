@@ -12,13 +12,14 @@ public class AntColony {
 	private ArrayList<AntRenew> ants;
 	private Maze mainMaze;
 	
-	private String coorfile = "hard coordinates.txt";
-	private String mazefile = "hard maze.txt";
+	private String coorfile = "medium coordinates.txt";
+	private String mazefile = "medium maze.txt";
 	
 	public AntColony() {
 		mainMaze = new Maze(coorfile, mazefile);
 		
 		for(int x = 0; x < maxiterations; x++) {
+			int totalLengthPath = 0;
 			ants = new ArrayList<AntRenew>();
 			
 			for(int a = 0; a < maxants; a++) {
@@ -40,6 +41,7 @@ public class AntColony {
 			for(AntRenew a: ants) {
 				try {
 					a.getThread().join();
+					totalLengthPath += a.getWalkedPath().size();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -58,6 +60,7 @@ public class AntColony {
 			
 			
 			System.out.println("Iteration nr. " + x);
+			System.out.println("Gemiddelde lengte van paden: " + totalLengthPath / maxants);
 		}
 		
 		mainMaze.getBestPath(mainMaze.getStartX(), mainMaze.getStartY());

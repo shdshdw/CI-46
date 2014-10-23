@@ -1,6 +1,7 @@
 package com.AntColony.Group46;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 
@@ -9,11 +10,13 @@ public class Maze {
 	private int height;
 	ArrayList<Tile> tiles;
 	private int startX, startY, endX, endY;
+	private String mazepath;
 	
 	public Maze(String coorpath, String mazepath) {
 		tiles = new ArrayList<Tile>();
 		
 		readFile(coorpath, mazepath);
+		this.mazepath = mazepath;
 	}
 	
 	public void readFile(String coorpath, String mazepath) {
@@ -93,21 +96,35 @@ public class Maze {
 		int currentX = x;
 		int currentY = y;
 		Tile previousTile = getTile(x, y);
-		int steps = 0;
+		ArrayList<Integer> directions = new ArrayList<Integer>();
 		while(currentX != endX || currentY != endY) {
 			//System.out.println(currentX + ", " + currentY);
 			Tile currentTile = getTile(currentX, currentY);
 			Tile next = bestNeighbor(previousTile, currentX, currentY);
-			System.out.print(Calculations.getDirection(currentTile, next) + ";");
-			steps++;
+			directions.add(Calculations.getDirection(currentTile, next));
 			currentX = next.getX();
 			currentY = next.getY();
 			previousTile = currentTile;
 		}
-		System.out.print(";");
-		System.out.println(steps);
+		
+		writeBestPath(directions);
 	}
 	
+	private void writeBestPath(ArrayList<Integer> directions) {
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(mazepath + " bestpath.txt", "UTF-8");
+			writer.println(directions.size() + ";");
+			writer.println(startX + ", " + startY + ";");
+			for(Integer i : directions) {
+				writer.print(i + ";");
+			}
+			writer.close();		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public boolean isWalkable(int x, int y) {
 		if(x < 0 || y < 0 || y > height - 1|| x > width - 1) { return false; }
 		return getTile(x, y).getWalkable();
