@@ -12,6 +12,7 @@ public class AntRenew  implements Runnable {
 
 	private Maze maze;
 	private ArrayList<Tile> walkedPath;
+	private ArrayList<Tile> alreadyWalked;
 	private int previousMove = -1;
 	private Random rand;
 
@@ -24,6 +25,7 @@ public class AntRenew  implements Runnable {
 		this.setMaze(maze);
 		
 		walkedPath = new ArrayList<Tile>();
+		alreadyWalked = new ArrayList<Tile>();
 		rand = new Random();
 	}
 	
@@ -39,6 +41,10 @@ public class AntRenew  implements Runnable {
 				walkedPath.add(maze.getTile(x, y));				
 			}
 			
+			if(!alreadyWalked.contains(maze.getTile(x, y))) {
+				alreadyWalked.add(maze.getTile(x, y));
+			}
+			
 			
 			ArrayList<Tile> posDir = getPossibleDirections();
 			if(posDir.size() == 1) {
@@ -46,8 +52,23 @@ public class AntRenew  implements Runnable {
 				direction = getDirection(posDir.get(0));
 			} else {
 				if(first) {
-					while(direction == -1 || direction == (previousMove + 2) % 4) {
-						direction = getDirection(posDir.get(rand.nextInt(posDir.size())));						
+					int already = 0;
+					for(Tile t: posDir) {
+						if(alreadyWalked.contains(t)) {
+							already++;
+						}
+					}
+					if(already == posDir.size()) {
+						while(direction == -1 || direction == (previousMove + 2) % 4) {
+							direction = getDirection(posDir.get(rand.nextInt(posDir.size())));						
+						}						
+					} else {
+						for(Tile t: posDir) {
+							if(!alreadyWalked.contains(t)) {
+								direction = getDirection(t);
+								break;
+							}
+						}
 					}
 				} else {
 					ArrayList<Integer> setOfDirections = new ArrayList<Integer>();
