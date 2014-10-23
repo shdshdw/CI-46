@@ -4,15 +4,16 @@ import java.util.ArrayList;
 
 
 public class AntColony {
-	private int maxants = 10;
-	private int maxiterations = 50;
-	private double p = 0.1;
+	private int maxants = 100;
+	private int maxiterations = 30;
+	private double p = 0.6d;
+	private double pheromonespath = 200d;
 	
 	private ArrayList<AntRenew> ants;
 	private Maze mainMaze;
 	
-	private String coorfile = "medium coordinates.txt";
-	private String mazefile = "medium maze.txt";
+	private String coorfile = "hard coordinates.txt";
+	private String mazefile = "hard maze.txt";
 	
 	public AntColony() {
 		mainMaze = new Maze(coorfile, mazefile);
@@ -32,6 +33,10 @@ public class AntColony {
 				ants.add(ant);
 			}
 			
+			for(Tile t: mainMaze.getTiles()) {
+				t.setPheromones(t.getPheromones() * (1d - p));
+			}
+			
 			for(AntRenew a: ants) {
 				try {
 					a.getThread().join();
@@ -45,25 +50,14 @@ public class AntColony {
 				int pathlength = a.getWalkedPath().size();
 				for(Tile t: a.getWalkedPath()) {
 					if(!done.contains(t)) {
-						mainMaze.getTile(t.getX(), t.getY()).setPheromones(mainMaze.getTile(t.getX(), t.getY()).getPheromones() + (1000d / pathlength));
+						mainMaze.getTile(t.getX(), t.getY()).setPheromones(mainMaze.getTile(t.getX(), t.getY()).getPheromones() + (pheromonespath / pathlength));
 						done.add(t);
 					}
 				}
 			}
 			
-			for(Tile t: mainMaze.getTiles()) {
-				t.setPheromones(t.getPheromones() * (1d - p));
-			}
 			
-			System.out.println("#" + x);
-			
-		}
-		
-		for(int y = 0; y < mainMaze.getHeight(); y++) {
-			for(int x = 0; x < mainMaze.getWidth(); x++) {
-				System.out.print(mainMaze.getTile(x, y).getPheromones() + " ");
-			}
-			System.out.println();
+			System.out.println("Iteration nr. " + x);
 		}
 		
 		mainMaze.getBestPath(mainMaze.getStartX(), mainMaze.getStartY());

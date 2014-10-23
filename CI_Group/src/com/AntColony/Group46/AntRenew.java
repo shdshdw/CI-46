@@ -30,7 +30,15 @@ public class AntRenew  implements Runnable {
 	public void run() {
 		while(x != maze.getEndX() || y != maze.getEndY()) {
 			int direction = -1;
-			walkedPath.add(maze.getTile(x, y));
+			if(walkedPath.contains(maze.getTile(x, y))) {
+				int beginIndex = walkedPath.indexOf(maze.getTile(x, y));
+				for(int i = walkedPath.size() - 1; i > beginIndex; i--) {
+					walkedPath.remove(i);
+				}
+			} else {
+				walkedPath.add(maze.getTile(x, y));				
+			}
+			
 			
 			ArrayList<Tile> posDir = getPossibleDirections();
 			if(posDir.size() == 1) {
