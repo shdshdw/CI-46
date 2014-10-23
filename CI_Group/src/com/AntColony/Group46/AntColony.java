@@ -12,8 +12,8 @@ public class AntColony {
 	private ArrayList<AntRenew> ants;
 	private Maze mainMaze;
 	
-	private String coorfile = "medium coordinates.txt";
-	private String mazefile = "medium maze.txt";
+	private String coorfile = "easy coordinates.txt";
+	private String mazefile = "easy maze.txt";
 	
 	public AntColony() {
 		mainMaze = new Maze(coorfile, mazefile);
@@ -48,13 +48,9 @@ public class AntColony {
 			}
 			
 			for(AntRenew a: ants) {
-				ArrayList<Tile> done = new ArrayList<Tile>();
 				int pathlength = a.getWalkedPath().size();
 				for(Tile t: a.getWalkedPath()) {
-					if(!done.contains(t)) {
 						mainMaze.getTile(t.getX(), t.getY()).setPheromones(mainMaze.getTile(t.getX(), t.getY()).getPheromones() + (pheromonespath / pathlength));
-						done.add(t);
-					}
 				}
 			}
 			
