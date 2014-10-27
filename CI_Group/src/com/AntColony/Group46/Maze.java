@@ -1,4 +1,5 @@
 package com.AntColony.Group46;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.PrintWriter;
@@ -11,6 +12,25 @@ public class Maze {
 	ArrayList<Tile> tiles;
 	private int startX, startY, endX, endY;
 	private String mazepath;
+	
+	public Maze(int width, int height, int startX, int startY, int endX, int endY) {
+		tiles = new ArrayList<Tile>();
+		
+		this.width = width;
+		this.height = height;
+		this.startX = startX;
+		this.startY = startY;
+		this.endX = endX;
+		this.endY = endY;
+	}
+	
+	public void addTile(int x, int y, boolean walkable, double pheromones) {
+		Tile t = new Tile(x, y, walkable);
+		t.setPheromones(pheromones);
+		tiles.add(t);
+		
+		this.mazepath = "";
+	}
 	
 	public Maze(String coorpath, String mazepath) {
 		tiles = new ArrayList<Tile>();

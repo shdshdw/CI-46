@@ -39,12 +39,7 @@ public class AntRenew  implements Runnable {
 				}
 			} else {
 				walkedPath.add(maze.getTile(x, y));				
-			}
-			
-			if(!alreadyWalked.contains(maze.getTile(x, y))) {
-				alreadyWalked.add(maze.getTile(x, y));
-			}
-			
+			}			
 			
 			ArrayList<Tile> posDir = getPossibleDirections();
 			if(posDir.size() == 1) {
@@ -52,6 +47,10 @@ public class AntRenew  implements Runnable {
 				direction = getDirection(posDir.get(0));
 			} else {
 				if(first) {
+					if(!alreadyWalked.contains(maze.getTile(x, y))) {
+						alreadyWalked.add(maze.getTile(x, y));
+					}
+					
 					int already = 0;
 					for(Tile t: posDir) {
 						if(alreadyWalked.contains(t)) {
