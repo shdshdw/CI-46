@@ -51,6 +51,7 @@ public class Ant implements Runnable {
 					productsVisited[maze.getTile(x, y).getProduct().getNumber() - 1] = true;
 					productPaths.add(walkedPath);
 					walkedPath = new ArrayList<Tile>();
+					walkedPath.add(maze.getTile(x, y));
 				}
 			}			
 			

@@ -61,25 +61,24 @@ public class AntColony {
 			System.out.println("Gemiddelde lengte van paden: " + totalLengthPath / maxants);
 		}
 		
-		mainMaze.getBestPath(mainMaze.getStartX(), mainMaze.getStartY());
+		AntRenew finishedAnt = new AntRenew(false, mainMaze.getStartX(), mainMaze.getStartY(), mainMaze);
+		finishedAnt.start();
+		try {
+			finishedAnt.getThread().join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		printMaze(finishedAnt.getWalkedPath());
 		
 		System.out.println("Finished!");
 	}
 	
-	private void printFirstMaze(AntRenew antRenew) {
-		antRenew.start(); 
-		try {
-			antRenew.getThread().join();
-			System.out.println("SUP");
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		ArrayList<Tile> walkedPath = antRenew.getWalkedPath();
+	private void printMaze(ArrayList<Tile> walkedPath) {
 		PrintWriter writer;
 		try {
-			writer = new PrintWriter("hard bestpath.txt", "UTF-8");
+			writer = new PrintWriter(mainMaze.getMazepath() + " bestpath.txt", "UTF-8");
 			writer.println(walkedPath.size() - 1 + ";");
-			writer.println(1 + ", " + 1 + ";");
+			writer.println(mainMaze.getStartX() + ", " + mainMaze.getStartY() + ";");
 			Tile previousTile = walkedPath.get(0);
 			walkedPath.remove(0);
 			for(Tile i : walkedPath) {
@@ -89,15 +88,6 @@ public class AntColony {
 			writer.close();		
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-	}
-
-	private void printMaze(Maze maze) {
-		for(int y = 0; y < maze.getHeight(); y++) {
-			for(int x = 0; x < maze.getWidth(); x++) {
-				System.out.print(maze.getTile(x, y).getPheromones());
-			}
-			System.out.println();
 		}
 	}
 

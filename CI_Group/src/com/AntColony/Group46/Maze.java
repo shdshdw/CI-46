@@ -13,6 +13,10 @@ public class Maze {
 	private int startX, startY, endX, endY;
 	private String mazepath;
 	
+	public String getMazepath() {
+		return mazepath;
+	}
+	
 	public Maze(int width, int height, int startX, int startY, int endX, int endY) {
 		tiles = new ArrayList<Tile>();
 		
