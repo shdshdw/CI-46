@@ -5,16 +5,16 @@ import java.util.ArrayList;
 
 
 public class AntColony {
-	private int maxants = 100;
-	private int maxiterations = 30;
+	private int maxants = 200;
+	private int maxiterations = 50;
 	private double p = 0.6d;
-	private double pheromonespath = 200d;
+	private double pheromonespath = 50d;
 	
 	private ArrayList<AntRenew> ants;
 	private Maze mainMaze;
 	
-	private String coorfile = "hard coordinates.txt";
-	private String mazefile = "hard maze.txt";
+	private String coorfile = "medium coordinates.txt";
+	private String mazefile = "medium maze.txt";
 	
 	public AntColony() {
 		mainMaze = new Maze(coorfile, mazefile);
