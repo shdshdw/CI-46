@@ -79,10 +79,10 @@ public class TSP {
 			Tile previousTile = null;
 			for(Tile t: paths) {
 				Tile currentTile = t;
-				/*if(currentTile.isProduct()) {
+				if(currentTile.isProduct()) {
 					sentences.add("take product #" + currentTile.getProduct().getNumber() + ";");
 					currentTile.setProduct(null);
-				}*/
+				}
 				if(previousTile != null) {
 					sentences.add(Calculations.getDirection(previousTile, currentTile) + ";");
 					totalSteps++;
