@@ -3,17 +3,17 @@ package com.TSP.Group46;
 import java.util.ArrayList;
 
 public class TSP {
-	private int maxants = 100;
-	private int maxiterations = 30;
+	private int maxants = 2;
+	private int maxiterations = 1;
 	private double p = 0.6d;
-	private double pheromonespath = 200d;
+	private double pheromonespath = 50d;
 	
 	private ArrayList<Ant> ants;
 	private Maze mainMaze;
 	
 	private String coorfile = "hard coordinates.txt";
 	private String mazefile = "hard maze.txt";
-	private String productfile = "tsp product.txt";
+	private String productfile = "tsp products.txt";
 
 	public TSP() {
 		mainMaze = new Maze(coorfile, mazefile, productfile);
@@ -23,9 +23,9 @@ public class TSP {
 			ants = new ArrayList<Ant>();
 			
 			for(int a = 0; a < maxants; a++) {
-				Maze subMaze = new Maze(mainMaze.getWidth(), mainMaze.getHeight(), mainMaze.getStartX(), mainMaze.getStartY(), mainMaze.getEndX(), mainMaze.getEndY());
+				Maze subMaze = new Maze(mainMaze.getWidth(), mainMaze.getHeight(), mainMaze.getStartX(), mainMaze.getStartY(), mainMaze.getEndX(), mainMaze.getEndY(), mainMaze.getCountProducts());
 				for(Tile t: mainMaze.getTiles()) {
-					subMaze.addTile(t.getX(), t.getY(), t.getWalkable(), t.getPheromones());
+					subMaze.addTile(t.getX(), t.getY(), t.getWalkable(), t.getPheromones(), t.getProduct());
 				}
 				
 				Ant ant;
@@ -39,18 +39,20 @@ public class TSP {
 				ants.add(ant);
 			}
 			
-			for(Tile t: mainMaze.getTiles()) {
+			/* for(Tile t: mainMaze.getTiles()) {
 				t.setPheromones(t.getPheromones() * (1d - p));
-			}
+			}*/ 
 			
 			for(Ant a: ants) {
 				try {
 					a.getThread().join();
+					int productPathsLength = a.getProductPaths().size();
+					System.out.println(productPathsLength);
 					int pathlength = a.getWalkedPath().size();
 					totalLengthPath += pathlength;
-					for(Tile t: a.getWalkedPath()) {
+					/*for(Tile t: a.getWalkedPath()) {
 							mainMaze.getTile(t.getX(), t.getY()).setPheromones(mainMaze.getTile(t.getX(), t.getY()).getPheromones() + (pheromonespath / pathlength));
-					}
+					}*/
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -60,9 +62,13 @@ public class TSP {
 			System.out.println("Gemiddelde lengte van paden: " + totalLengthPath / maxants);
 		}
 		
-		mainMaze.getBestPath(mainMaze.getStartX(), mainMaze.getStartY());
+		//mainMaze.getBestPath(mainMaze.getStartX(), mainMaze.getStartY());
 		
 		System.out.println("Finished!");
+	}
+	
+	private void printFile() {
+		
 	}
 	
 	public static void main(String[] args) {

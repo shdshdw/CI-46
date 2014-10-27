@@ -5,20 +5,24 @@ public class Tile {
 	private int x, y;
 	private double pheromones;
 	private double chance;
-	private boolean product;
+	private Product product;
 	
 	public Tile(int x, int y, boolean walkable) {
 		this.x = x;
 		this.y = y;
 		this.walkable = walkable;
-		this.product = false;
+		this.product = null;
 	}
 	
 	public boolean isProduct() {
+		if(product == null) { return false; } else { return true; }
+	}
+	
+	public Product getProduct() {
 		return product;
 	}
 	
-	public void setProduct(boolean product) {
+	public void setProduct(Product product) {
 		this.product = product;
 	}
 	

@@ -11,8 +11,9 @@ public class Maze {
 	ArrayList<Tile> tiles;
 	private int startX, startY, endX, endY;
 	private String mazepath;
+	private int totalProducts;
 	
-	public Maze(int width, int height, int startX, int startY, int endX, int endY) {
+	public Maze(int width, int height, int startX, int startY, int endX, int endY, int totalProducts) {
 		tiles = new ArrayList<Tile>();
 		
 		this.width = width;
@@ -21,11 +22,13 @@ public class Maze {
 		this.startY = startY;
 		this.endX = endX;
 		this.endY = endY;
+		this.totalProducts = totalProducts;
 	}
 	
-	public void addTile(int x, int y, boolean walkable, double pheromones) {
+	public void addTile(int x, int y, boolean walkable, double pheromones, Product product) {
 		Tile t = new Tile(x, y, walkable);
 		t.setPheromones(pheromones);
+		t.setProduct(product);
 		tiles.add(t);
 		
 		this.mazepath = "";
@@ -79,10 +82,17 @@ public class Maze {
 			
 			// Read Products
 			BufferedReader productinput = new BufferedReader(new FileReader(productpath));
-			int count = Integer.parseInt(mazeinput.readLine().split(";")[0]);
-			System.out.println(count);
-			//String[] size = line.split(" ");
-			//System.out.println("Tile Size: " + tiles.size());
+			int count = Integer.parseInt(productinput.readLine().split(";")[0]);
+			totalProducts = count;
+			for(int x = 1; x <= count; x++) {
+				String product = productinput.readLine();
+				String productcoor = product.substring((x + ":").length());
+				int productX = Integer.parseInt(productcoor.split("\\W")[1]);
+				int productY = Integer.parseInt(productcoor.split("\\W")[3]);
+				
+				Product p = new Product(x);
+				getTile(productX, productY).setProduct(p);
+			}
 			productinput.close();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -182,5 +192,9 @@ public class Maze {
 	
 	public int getHeight() {
 		return height;
+	}
+
+	public int getCountProducts() {
+		return totalProducts;
 	}
 }

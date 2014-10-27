@@ -13,6 +13,8 @@ public class Ant implements Runnable {
 	private Maze maze;
 	private ArrayList<Tile> walkedPath;
 	private ArrayList<Tile> alreadyWalked;
+	private ArrayList<ArrayList<Tile>> productPaths;
+	private boolean[] productsVisited;
 	private int previousMove = -1;
 	private Random rand;
 
@@ -24,13 +26,19 @@ public class Ant implements Runnable {
 		this.setY(y);
 		this.setMaze(maze);
 		
+		productsVisited = new boolean[maze.getCountProducts()];
+		for(int p = 0; p < productsVisited.length; p++) {
+			productsVisited[p] = false;
+		}
+		
 		walkedPath = new ArrayList<Tile>();
 		alreadyWalked = new ArrayList<Tile>();
+		productPaths = new ArrayList<ArrayList<Tile>>();
 		rand = new Random();
 	}
 	
 	public void run() {
-		while(x != maze.getEndX() || y != maze.getEndY()) {
+		while(!foundAllProduct() || x != maze.getEndX() || y != maze.getEndY()) {
 			int direction = -1;
 			if(walkedPath.contains(maze.getTile(x, y))) {
 				int beginIndex = walkedPath.indexOf(maze.getTile(x, y));
@@ -38,7 +46,12 @@ public class Ant implements Runnable {
 					walkedPath.remove(i);
 				}
 			} else {
-				walkedPath.add(maze.getTile(x, y));				
+				walkedPath.add(maze.getTile(x, y));
+				if(maze.getTile(x, y).isProduct() && !productsVisited[maze.getTile(x, y).getProduct().getNumber() - 1]) {
+					productsVisited[maze.getTile(x, y).getProduct().getNumber() - 1] = true;
+					productPaths.add(walkedPath);
+					walkedPath = new ArrayList<Tile>();
+				}
 			}			
 			
 			ArrayList<Tile> posDir = getPossibleDirections();
@@ -109,6 +122,7 @@ public class Ant implements Runnable {
 			previousMove = direction;
 		}
 		walkedPath.add(maze.getTile(x, y));
+		productPaths.add(walkedPath);
 	}
 	
 	// 0 = EAST, 1 = NORTH, 2 = WEST, 3 = SOUTH
@@ -171,6 +185,19 @@ public class Ant implements Runnable {
 
 	public Thread getThread() {
 		return t;
+	}
+	
+	private boolean foundAllProduct() {
+		for(int x = 0; x < productsVisited.length; x++) {
+			if(!productsVisited[x]) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public ArrayList<ArrayList<Tile>> getProductPaths() {
+		return productPaths;
 	}
 
 }
