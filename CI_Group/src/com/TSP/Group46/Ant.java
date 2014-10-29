@@ -37,9 +37,14 @@ public class Ant implements Runnable {
 		rand = new Random();
 	}
 	
+	/**
+	 * Run the algorithm.
+	 */
 	public void run() {
+		// Check is all products found and Ant is at the end, otherwise run again
 		while(!foundAllProduct() || x != maze.getEndX() || y != maze.getEndY()) {
 			int direction = -1;
+			// Check the walkedPath for loops.
 			if(walkedPath.contains(maze.getTile(x, y))) {
 				int beginIndex = walkedPath.indexOf(maze.getTile(x, y));
 				for(int i = walkedPath.size() - 1; i > beginIndex; i--) {
@@ -47,6 +52,7 @@ public class Ant implements Runnable {
 				}
 			} else {
 				walkedPath.add(maze.getTile(x, y));
+				// If product is on Tile, add to visited products and get the walked productPath.
 				if(maze.getTile(x, y).isProduct() && !productsVisited[maze.getTile(x, y).getProduct().getNumber() - 1]) {
 					productsVisited[maze.getTile(x, y).getProduct().getNumber() - 1] = true;
 					productPaths.add(walkedPath);
@@ -55,11 +61,13 @@ public class Ant implements Runnable {
 				}
 			}			
 			
+			// Get possible directions.
 			ArrayList<Tile> posDir = getPossibleDirections();
 			if(posDir.size() == 1) {
 				maze.getTile(x, y).setWalkable(false);
 				direction = getDirection(posDir.get(0));
 			} else {
+				// Run this algorithm, when maze is walked for the first time, so random.
 				if(first) {
 					if(!alreadyWalked.contains(maze.getTile(x, y))) {
 						alreadyWalked.add(maze.getTile(x, y));
@@ -87,6 +95,7 @@ public class Ant implements Runnable {
 					ArrayList<Integer> setOfDirections = new ArrayList<Integer>();
 					ArrayList<Tile> isInSetOfDirections = new ArrayList<Tile>();
 					
+					// Add the directions according to the pheromones.
 					for(Tile t: posDir) {
 						int dir = getDirection(t);
 						if((int)t.getPheromones() > 0) {
@@ -96,6 +105,8 @@ public class Ant implements Runnable {
 							setOfDirections.add(dir);
 						}
 					}
+					
+					// Choose a direction according the pheromones.
 					if(isInSetOfDirections.size() == 1 && getDirection(isInSetOfDirections.get(0)) == (previousMove + 2) % 4) {
 						posDir.remove(isInSetOfDirections.get(0));
 						direction = getDirection(posDir.get(rand.nextInt(posDir.size())));
@@ -111,6 +122,7 @@ public class Ant implements Runnable {
 				}
 			}
 			
+			// Update X and Y to the direction.
 			if(direction == 1) {
 				setY(y - 1);
 			} else if(direction == 0) {
@@ -126,7 +138,10 @@ public class Ant implements Runnable {
 		productPaths.add(walkedPath);
 	}
 	
-	// 0 = EAST, 1 = NORTH, 2 = WEST, 3 = SOUTH
+	/**
+	 * Get possible directions of the current Ant.
+	 * @return ArrayList of possible Tiles
+	 */
 	private ArrayList<Tile> getPossibleDirections() {
 		ArrayList<Tile> posDir = new ArrayList<Tile>();
 		
@@ -149,6 +164,11 @@ public class Ant implements Runnable {
 		return posDir;
 	}
 	
+	/**
+	 * Get the direction for the next tile
+	 * @param t Next tile
+	 * @return an int for the direction to walk
+	 */
 	private int getDirection(Tile t) {
 		if(t.getX() > x) {
 			return 0;
@@ -188,6 +208,10 @@ public class Ant implements Runnable {
 		return t;
 	}
 	
+	/**
+	 * Check whether the Ant found all products
+	 * @return Boolean whether the Ant found all products
+	 */
 	private boolean foundAllProduct() {
 		for(int x = 0; x < productsVisited.length; x++) {
 			if(!productsVisited[x]) {
@@ -197,6 +221,10 @@ public class Ant implements Runnable {
 		return true;
 	}
 	
+	/**
+	 * Get the productPaths
+	 * @return ArrayList of ArrayLists of Tiles
+	 */
 	public ArrayList<ArrayList<Tile>> getProductPaths() {
 		return productPaths;
 	}

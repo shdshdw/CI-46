@@ -22,6 +22,7 @@ public class TSP {
 		for(int x = 0; x < maxiterations; x++) {
 			ants = new ArrayList<Ant>();
 			
+			// Create new ants for colony and let them begin to walk.
 			for(int a = 0; a < maxants; a++) {
 				Maze subMaze = new Maze(mainMaze.getWidth(), mainMaze.getHeight(), mainMaze.getStartX(), mainMaze.getStartY(), mainMaze.getEndX(), mainMaze.getEndY(), mainMaze.getCountProducts());
 				for(Tile t: mainMaze.getTiles()) {
@@ -39,10 +40,12 @@ public class TSP {
 				ants.add(ant);
 			}
 			
+			// Update the main maze to the evaporation factor
 			for(Tile t: mainMaze.getTiles()) {
 				t.setPheromones(t.getPheromones() * (1d - p));
 			}
 			
+			// Update the main maze to the pheromones from the Ants
 			for(Ant a: ants) {
 				try {
 					a.getThread().join();
@@ -60,6 +63,7 @@ public class TSP {
 			System.out.println("Iteration nr. " + x);
 		}
 		
+		// Run the last Ant for the best path.
 		Ant finishedAnt = new Ant(false, mainMaze.getStartX(), mainMaze.getStartY(), mainMaze);
 		finishedAnt.start();
 		try {
@@ -72,6 +76,10 @@ public class TSP {
 		System.out.println("Finished!");
 	}
 	
+	/**
+	 * Print the best path and take products
+	 * @param productPaths The best product paths
+	 */
 	private void printFile(ArrayList<ArrayList<Tile>> productPaths) {
 		int totalSteps = 0;
 		ArrayList<String> sentences = new ArrayList<String>();
@@ -82,6 +90,7 @@ public class TSP {
 				if(currentTile.isProduct()) {
 					sentences.add("take product #" + currentTile.getProduct().getNumber() + ";");
 					currentTile.setProduct(null);
+					totalSteps++;
 				}
 				if(previousTile != null) {
 					sentences.add(Calculations.getDirection(previousTile, currentTile) + ";");
@@ -93,25 +102,7 @@ public class TSP {
 		writeBestPath(sentences, totalSteps);
 	}
 	
-	// 0 = EAST, 1 = NORTH, 2 = WEST, 3 = SOUTH
-	/* public void getBestPath(int x, int y) {
-		int currentX = x;
-		int currentY = y;
-		Tile previousTile = getTile(x, y);
-		ArrayList<Integer> directions = new ArrayList<Integer>();
-		while(currentX != endX || currentY != endY) {
-			//System.out.println(currentX + ", " + currentY);
-			Tile currentTile = getTile(currentX, currentY);
-			Tile next = bestNeighbor(previousTile, currentX, currentY);
-			directions.add(Calculations.getDirection(currentTile, next));
-			currentX = next.getX();
-			currentY = next.getY();
-			previousTile = currentTile;
-		}
-		
-		writeBestPath(directions);
-	} */
-	
+	// PrintWrite the best path for the products
 	private void writeBestPath(ArrayList<String> directions, int totalSteps) {
 		PrintWriter writer;
 		try {
