@@ -23,6 +23,7 @@ public class AntColony {
 			int totalLengthPath = 0;
 			ants = new ArrayList<AntRenew>();
 			
+			// Create new Ants, add them to the colony and let them start walking.
 			for(int a = 0; a < maxants; a++) {
 				Maze subMaze = new Maze(mainMaze.getWidth(), mainMaze.getHeight(), mainMaze.getStartX(), mainMaze.getStartY(), mainMaze.getEndX(), mainMaze.getEndY());
 				for(Tile t: mainMaze.getTiles()) {
@@ -30,6 +31,8 @@ public class AntColony {
 				}
 				
 				AntRenew ant;
+				
+				// Check whether it is the first time in the maze.
 				if(x == 0) { 
 					ant = new AntRenew(true, subMaze.getStartX(), subMaze.getStartY(), subMaze);
 				} else {
@@ -40,10 +43,12 @@ public class AntColony {
 				ants.add(ant);
 			}
 			
+			// Update the pheromones from the maze with the evaporation factor.
 			for(Tile t: mainMaze.getTiles()) {
 				t.setPheromones(t.getPheromones() * (1d - p));
 			}
 			
+			// Check whether the all ants are finished and update the mainMaze pheromones accordingly
 			for(AntRenew a: ants) {
 				try {
 					a.getThread().join();
@@ -61,6 +66,7 @@ public class AntColony {
 			System.out.println("Gemiddelde lengte van paden: " + totalLengthPath / maxants);
 		}
 		
+		// Start an Ant for the last bestPath
 		AntRenew finishedAnt = new AntRenew(false, mainMaze.getStartX(), mainMaze.getStartY(), mainMaze);
 		finishedAnt.start();
 		try {
@@ -73,6 +79,10 @@ public class AntColony {
 		System.out.println("Finished!");
 	}
 	
+	/**
+	 * Print the best Path
+	 * @param walkedPath The best walkedPath
+	 */
 	private void printMaze(ArrayList<Tile> walkedPath) {
 		PrintWriter writer;
 		try {

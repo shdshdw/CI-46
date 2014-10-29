@@ -29,9 +29,16 @@ public class AntRenew  implements Runnable {
 		rand = new Random();
 	}
 	
+	/**
+	 * The method that runs the algorhitme.
+	 */
 	public void run() {
+		
+		// Check whether the Ant is at the end, otherwise run again
 		while(x != maze.getEndX() || y != maze.getEndY()) {
 			int direction = -1;
+			
+			// Check the walkedPath for loops
 			if(walkedPath.contains(maze.getTile(x, y))) {
 				int beginIndex = walkedPath.indexOf(maze.getTile(x, y));
 				for(int i = walkedPath.size() - 1; i > beginIndex; i--) {
@@ -41,11 +48,15 @@ public class AntRenew  implements Runnable {
 				walkedPath.add(maze.getTile(x, y));				
 			}			
 			
+			// Check the possible directions
 			ArrayList<Tile> posDir = getPossibleDirections();
+			
+			// if possible directions = 1, go to that tile, and close the path
 			if(posDir.size() == 1) {
 				maze.getTile(x, y).setWalkable(false);
 				direction = getDirection(posDir.get(0));
 			} else {
+				// The algoritme that is ran when the maze is walked by the first colony
 				if(first) {
 					if(!alreadyWalked.contains(maze.getTile(x, y))) {
 						alreadyWalked.add(maze.getTile(x, y));
@@ -73,6 +84,7 @@ public class AntRenew  implements Runnable {
 					ArrayList<Integer> setOfDirections = new ArrayList<Integer>();
 					ArrayList<Tile> isInSetOfDirections = new ArrayList<Tile>();
 					
+					// Add the directions to an ArrayList according the Pheromones
 					for(Tile t: posDir) {
 						int dir = getDirection(t);
 						if((int)t.getPheromones() > 0) {
@@ -82,6 +94,8 @@ public class AntRenew  implements Runnable {
 							setOfDirections.add(dir);
 						}
 					}
+					
+					// Choose a random next tile, according to the pheromones, more pheromones, more change to go there.
 					if(isInSetOfDirections.size() == 1 && getDirection(isInSetOfDirections.get(0)) == (previousMove + 2) % 4) {
 						posDir.remove(isInSetOfDirections.get(0));
 						direction = getDirection(posDir.get(rand.nextInt(posDir.size())));
@@ -97,6 +111,7 @@ public class AntRenew  implements Runnable {
 				}
 			}
 			
+			// Check the direction and update the X and Y of the Ant accordingly
 			if(direction == 1) {
 				setY(y - 1);
 			} else if(direction == 0) {
@@ -111,7 +126,10 @@ public class AntRenew  implements Runnable {
 		walkedPath.add(maze.getTile(x, y));
 	}
 	
-	// 0 = EAST, 1 = NORTH, 2 = WEST, 3 = SOUTH
+	/**
+	 * Get possible directions of the current Ant.
+	 * @return ArrayList of possible Tiles
+	 */
 	private ArrayList<Tile> getPossibleDirections() {
 		ArrayList<Tile> posDir = new ArrayList<Tile>();
 		
@@ -134,6 +152,11 @@ public class AntRenew  implements Runnable {
 		return posDir;
 	}
 	
+	/**
+	 * Get the direction for the next tile
+	 * @param t Next tile
+	 * @return an int for the direction to walk
+	 */
 	private int getDirection(Tile t) {
 		if(t.getX() > x) {
 			return 0;
@@ -164,6 +187,9 @@ public class AntRenew  implements Runnable {
 		return walkedPath;
 	}
 	
+	/**
+	 * Start the Ant Algorhitme
+	 */
 	public synchronized void start() {
 		t = new Thread(this, "Ant");
 		t.start();
